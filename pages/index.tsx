@@ -81,10 +81,10 @@ const Home = ({ items }: Props) => {
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch(ENDPOINT + '/getTodos');
+    const res = await fetch(ENDPOINT + "/getTodos");
     const items = await res.json();
     return {
-      props: { items: JSON.parse(JSON.stringify(items)) },
+      props: { items },
     };
   } catch (error) {
     console.log(error);
