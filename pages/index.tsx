@@ -9,6 +9,8 @@ import List from "../components/List";
 import { updateTask } from "../utils/helper";
 import Search from "../components/Search";
 
+let ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
+
 type Props = {
   items: Todo[];
 };
@@ -79,7 +81,7 @@ const Home = ({ items }: Props) => {
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch("http://localhost:3000/api/getTodos");
+    const res = await fetch(ENDPOINT + '/getTodos');
     const items = await res.json();
     return {
       props: { items: JSON.parse(JSON.stringify(items)) },

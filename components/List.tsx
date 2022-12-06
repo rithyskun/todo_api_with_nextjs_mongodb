@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { ChangeEvent } from "react";
 import styles from "../styles/Home.module.css";
 
+let ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
+
 type Props = {
   items: Todo[];
   onChange(data: Todo, e: ChangeEvent<HTMLInputElement>): void;
@@ -14,7 +16,7 @@ const List = ({ items, onChange }: Props) => {
     router.push(`/todo/edit/${id}`);
   };
   const handleDelete = async (id: string) => {
-    await fetch("http://localhost:3000/api/deleteTodo?id=" + id, {
+    await fetch(ENDPOINT + '/deleteTodo?id=' + id, {
       method: "DELETE",
     });
     router.push("/");

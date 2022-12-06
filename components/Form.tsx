@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { Todo } from "../types/type";
 import styles from "../styles/Home.module.css";
 
+let ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
+
 type ChangeInputHandler = ChangeEvent<HTMLInputElement>;
 
 const inititalState = {
@@ -59,7 +61,7 @@ const Form = (): JSX.Element => {
       }, 2000);
       return;
     }
-    const response = await fetch("/api/addTodo", {
+    const response = await fetch(ENDPOINT + '/addTodo', {
       method: "POST",
       body: JSON.stringify(task),
       headers: {
@@ -79,7 +81,7 @@ const Form = (): JSX.Element => {
   }
 
   async function updateTask(id: string, task: Todo) {
-    await fetch("/api/updateTodo?id=" + id, {
+    await fetch(ENDPOINT +"/updateTodo?id=" + id, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: {
@@ -89,7 +91,7 @@ const Form = (): JSX.Element => {
   }
 
   const onLoad = async (id: string) => {
-    const resp = await fetch("http://localhost:3000/api/getTodo?id=" + id);
+    const resp = await fetch(ENDPOINT + "/getTodo?id=" + id);
     const task = await resp.json();
     setTask({
       todo: task.todo,
