@@ -4,7 +4,7 @@ import { Server as IOServer } from 'socket.io'
 import type { NextApiRequest, NextApiResponse } from "next";
 
 interface SocketServer extends HTTPServer {
-    io?: IOServer | undefined
+    io?: undefined | IOServer
 }
 
 interface SocketWithIO extends NetSocket {
@@ -16,22 +16,20 @@ interface NextApiResponseWithSocket extends NextApiResponse {
 }
 
 export default function SocketHanler(
-    req: NextApiRequest,
+    _: NextApiRequest,
     res: NextApiResponseWithSocket
 ) {
     if (res.socket.server.io) {
         console.log('Socket is already running.')
-        console.log(res)
     } else {
         console.log('Socket is initializing...')
-
+        
         const io = new IOServer(res.socket.server, { cors: { origin: '*' } })
         res.socket.server.io = io
 
         io.on('connection', (socket) => {
             socket.on('updateTodo', (payload) => {
                 setTimeout(() => {
-
                     socket.broadcast.emit('fetchTodo', payload)
                 }, 1000)
             })

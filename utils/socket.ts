@@ -1,12 +1,12 @@
-import { io } from 'socket.io-client'
+import io from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
 
 const ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
 
-let socket: Socket
+let socket: undefined | Socket
 
 export function socketConnection() {
-    fetch('/api/socket')
+    fetch(ENDPOINT + '/socket')
     socket = io();
 }
 
@@ -17,9 +17,9 @@ export function socketDisconnected() {
 }
 
 export function socketEmit(event: string, payload: any) {
-    socket.emit(event, payload)
+    socket?.emit(event, payload)
 }
 
 export function socketOn(event: string, payload: any) {
-    socket.on(event, payload)
+    socket?.on(event, payload)
 }
