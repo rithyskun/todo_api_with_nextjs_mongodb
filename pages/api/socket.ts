@@ -1,5 +1,6 @@
 import type { Server as HTTPServer } from 'http'
 import type { Socket as NetSocket } from 'net'
+import { createServer } from "http";
 import { Server as IOServer } from 'socket.io'
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -23,9 +24,14 @@ export default function SocketHanler(
         console.log('Socket is already running.')
     } else {
         console.log('Socket is initializing...')
-        
-        const io = new IOServer(res.socket.server, { cors: { origin: '*' } })
+
+        const httpServer = createServer();
+        const io = new IOServer(httpServer, {
+            cors: { origin: '*' }
+        })
         res.socket.server.io = io
+        // const io = new IOServer(res.socket.server, { cors: { origin: '*' }, path: '/api/socket' })
+        // res.socket.server.io = io
 
         io.on('connection', (socket) => {
             socket.on('updateTodo', (payload) => {
