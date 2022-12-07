@@ -7,6 +7,7 @@ let socket: undefined | Socket
 
 export function socketConnection() {
     fetch('/api/socket')
+    // fetch("http://localhost:3000/api/socket")
     socket = io();
 }
 
