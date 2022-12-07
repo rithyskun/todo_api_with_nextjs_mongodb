@@ -6,8 +6,7 @@ const ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
 let socket: undefined | Socket
 
 export function socketConnection() {
-    fetch('/api/socket')
-    // fetch("http://localhost:3000/api/socket")
+    fetch(ENDPOINT + '/socket')
     socket = io();
 }
 

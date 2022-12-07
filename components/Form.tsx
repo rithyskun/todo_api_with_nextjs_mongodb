@@ -30,6 +30,7 @@ const Form = (): JSX.Element => {
     try {
       if (typeof router.query.id === "string") {
         await updateTask(router.query.id, task);
+        router.push("/");
       } else {
         if (!task.todo) {
           setError(true);
@@ -86,6 +87,15 @@ const Form = (): JSX.Element => {
   }
 
   async function updateTask(id: string, task: Todo) {
+    if (!task.todo) {
+      setError(true);
+      setMessage("The task require!");
+      setTimeout(() => {
+        setError(false);
+        setMessage("");
+      }, 2000);
+      return;
+    }
     const response = await fetch(ENDPOINT + "/todo/updateTodo?id=" + id, {
       method: "PUT",
       body: JSON.stringify(task),
@@ -103,7 +113,7 @@ const Form = (): JSX.Element => {
       }, 2000);
       return;
     }
-    socketEmit("updateTodo", response);
+    // socketEmit("updateTodo", response);
     return response;
   }
 
@@ -118,7 +128,7 @@ const Form = (): JSX.Element => {
 
   useEffect(() => {
     if (typeof router.query.id === "string") {
-      socketConnection();
+      // socketConnection();
       onLoad(router.query.id);
     }
   }, [router.query]);
@@ -136,7 +146,6 @@ const Form = (): JSX.Element => {
               value={task.todo}
               onChange={handleChange}
               placeholder="add a task item"
-              required
             />
             <>
               <input

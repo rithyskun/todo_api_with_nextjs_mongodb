@@ -8,7 +8,11 @@ import List from "../components/List";
 
 import { updateTask } from "../utils/helper";
 import Search from "../components/Search";
-import { socketConnection, socketDisconnected, socketOn } from "../utils/socket";
+import {
+  socketConnection,
+  socketDisconnected,
+  socketOn,
+} from "../utils/socket";
 
 const ENDPOINT: string = process.env.NEXT_PUBLIC_HOSTNAME as string;
 
@@ -21,13 +25,13 @@ const Home = ({ items }: Props) => {
   const [keyword, setKeyword] = useState("");
   const [isSearch, setIsSearch] = useState(false);
 
-  useEffect(() => {
-    socketConnection();
-    socketOn("fetchTodo", (payload: Todo) => {
-      fetchTodo();
-    });
-    
-  }, []);
+  // useEffect(() => {
+  //   socketConnection();
+  //   socketOn("fetchTodo", (payload: Todo) => {
+  //     fetchTodo();
+  //   });
+
+  // }, []);
   const handleChange = async (data: Todo, e: ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target;
     try {
@@ -52,7 +56,7 @@ const Home = ({ items }: Props) => {
   });
 
   const fetchTodo = () => {
-    router.replace(router.asPath)
+    router.replace(router.asPath);
   };
 
   return (

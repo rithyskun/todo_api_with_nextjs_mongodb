@@ -8,7 +8,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const todos = await db
       .collection("todos")
       .find({})
-      .limit(20)
+      .limit(50)
       .toArray();
     res.json(todos);
   } catch (err: any) {
