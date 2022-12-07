@@ -24,12 +24,13 @@ export default function SocketHanler(
     } else {
         console.log('Socket is initializing...')
 
-        const io = new IOServer(res.socket.server)
+        const io = new IOServer(res.socket.server, { cors: { origin: '*' } })
         res.socket.server.io = io
 
         io.on('connection', (socket) => {
             socket.on('updateTodo', (payload) => {
                 setTimeout(() => {
+
                     socket.broadcast.emit('fetchTodo', payload)
                 }, 1000)
             })
