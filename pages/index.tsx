@@ -48,7 +48,7 @@ const Home = ({ items }: Props) => {
   };
 
   let filtered = items.filter((item) => {
-    return item.todo.toLowerCase().includes(keyword);
+    return item.todo?.toLowerCase().includes(keyword);
   });
 
   const fetchTodo = () => {
