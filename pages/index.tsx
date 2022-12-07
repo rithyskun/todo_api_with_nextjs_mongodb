@@ -10,22 +10,43 @@ import { updateTask } from "../utils/helper";
 import Search from "../components/Search";
 import { socketConnection, socketDisconnected, socketOn } from "../utils/socket";
 
+import io from 'socket.io-client'
+import type { Socket } from 'socket.io-client'
+
 const ENDPOINT: string = process.env.NEXT_PUBLIC_HOSTNAME as string;
 
 type Props = {
   items: Todo[];
 };
 
+let socket: undefined | Socket
+
 const Home = ({ items }: Props) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [isSearch, setIsSearch] = useState(false);
 
+  const socketInitializer = async () => {
+    fetch('/api/socket')
+    socket = io()
+
+    socket.on('connect', () => {
+      console.log('connected')
+    })
+
+    socket.on('fetchTodo', (payload) => {
+      setTimeout(() => {
+        fetchTodo();
+      }, 1000)
+    })
+  }
+
   useEffect(() => {
-    socketConnection();
-    socketOn("fetchTodo", (payload: Todo) => {
-      fetchTodo();
-    });
+    socketInitializer();
+    // socketConnection();
+    // socketOn("fetchTodo", (payload: Todo) => {
+    //   fetchTodo();
+    // });
     
   }, []);
   const handleChange = async (data: Todo, e: ChangeEvent<HTMLInputElement>) => {
