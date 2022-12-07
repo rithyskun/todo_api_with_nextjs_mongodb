@@ -21,6 +21,7 @@ export default function SocketHanler(
 ) {
     if (res.socket.server.io) {
         console.log('Socket is already running.')
+        console.log(res)
     } else {
         console.log('Socket is initializing...')
 

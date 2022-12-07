@@ -6,7 +6,7 @@ const ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
 let socket: Socket
 
 export function socketConnection() {
-    fetch(ENDPOINT +'/socket')
+    fetch('/api/socket')
     socket = io();
 }
 
