@@ -1,4 +1,4 @@
-import clientPromise from "../../lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 import { ObjectId } from 'mongodb';
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -8,6 +8,15 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const db = client.db("todos");
         const { id } = req.query;
         const { todo, isCompleted } = req.body;
+
+        // const isExist = await db
+        //     .collection("todos")
+        //     .findOne({
+        //         'todo': todo
+        //     })
+        // if (isExist) {
+        //     return res.status(409).json('The task exist!')
+        // }
 
         const todoUpdateOne = await db
             .collection("todos")

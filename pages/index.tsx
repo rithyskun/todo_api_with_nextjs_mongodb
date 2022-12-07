@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { Todo } from "../types/type";
 import { useRouter } from "next/router";
 
@@ -8,8 +8,9 @@ import List from "../components/List";
 
 import { updateTask } from "../utils/helper";
 import Search from "../components/Search";
+import { socketConnection, socketDisconnected, socketOn } from "../utils/socket";
 
-let ENDPOINT: string = (process.env.NEXT_PUBLIC_HOSTNAME) as string
+const ENDPOINT: string = process.env.NEXT_PUBLIC_HOSTNAME as string;
 
 type Props = {
   items: Todo[];
@@ -19,14 +20,23 @@ const Home = ({ items }: Props) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
   const [isSearch, setIsSearch] = useState(false);
+
+  useEffect(() => {
+    socketConnection();
+    socketOn("fetchTodo", (payload: Todo) => {
+      fetchTodo();
+    });
+    
+  }, []);
   const handleChange = async (data: Todo, e: ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target;
     try {
       let id = String(data._id);
-      await updateTask(id, {
+      let task = {
         todo: data.todo,
         isCompleted: checked,
-      });
+      };
+      await updateTask(id, task);
       router.push("/");
     } catch (error: any) {
       console.log(error);
@@ -40,6 +50,10 @@ const Home = ({ items }: Props) => {
   let filtered = items.filter((item) => {
     return item.todo.toLowerCase().includes(keyword);
   });
+
+  const fetchTodo = () => {
+    router.replace(router.asPath)
+  };
 
   return (
     <div>
@@ -81,7 +95,7 @@ const Home = ({ items }: Props) => {
 
 export async function getServerSideProps() {
   try {
-    const res = await fetch(ENDPOINT + "/getTodos");
+    const res = await fetch(ENDPOINT + "/todo/getTodos");
     const items = await res.json();
     return {
       props: { items },
