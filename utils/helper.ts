@@ -32,8 +32,10 @@ export async function updateTask(id: string, task: Todo) {
 };
 
 export async function handleDelete(id: string) {
-  await fetch(ENDPOINT + '/todo/deleteTodo?id=' + id, {
-    method: "DELETE",
-  });
-  Router.push('/')
+  if(window.confirm("Do you want to delete this item?")) {
+    await fetch(ENDPOINT + '/todo/deleteTodo?id=' + id, {
+      method: "DELETE",
+    });
+    Router.push('/')
+  }
 };
