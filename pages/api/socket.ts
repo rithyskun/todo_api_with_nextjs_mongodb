@@ -1,4 +1,4 @@
-import { Server as HTTPServer, Server } from 'http'
+import type { Server as HTTPServer } from 'http'
 import type { Socket as NetSocket } from 'net'
 import { Server as IOServer } from 'socket.io'
 import type { NextApiRequest, NextApiResponse } from "next";

@@ -8,8 +8,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const db = client.db("todos");
         const { id } = req.query;
         const { todo, isCompleted } = req.body;
-        let now = new Date()
-    now.toISOString().substring(0, 10)
 
         const todoUpdateOne = await db
             .collection("todos")
@@ -20,7 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 {
                     $set: {
                         "todo": todo,
-                        "isCompleted": isCompleted,
+                        "isCompleted": isCompleted
                     }
                 }
 

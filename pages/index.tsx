@@ -23,13 +23,15 @@ type Props = {
 const Home = ({ items }: Props) => {
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
+  const [isSearch, setIsSearch] = useState(false);
 
-  useEffect(() => {
-    socketConnection();
-    socketOn("fetchTodo", (payload: Todo) => {
-      fetchTodo();
-    });
-  }, []);
+  // useEffect(() => {
+  //   socketConnection();
+  //   socketOn("fetchTodo", (payload: Todo) => {
+  //     fetchTodo();
+  //   });
+
+  // }, []);
   const handleChange = async (data: Todo, e: ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target;
     try {
@@ -39,24 +41,22 @@ const Home = ({ items }: Props) => {
         isCompleted: checked,
       };
       await updateTask(id, task);
-      router.push("/").then(()=>{}).catch(()=>{})
+      router.push("/");
     } catch (error: any) {
       console.log(error);
     }
   };
 
   const handleChangeKeyword = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    setKeyword(e.target.value)
-  }
+    setKeyword(e.target.value);
+  };
 
   let filtered = items.filter((item) => {
-    if(!item) return items
     return item.todo?.toLowerCase().includes(keyword);
   });
 
   const fetchTodo = () => {
-    router.replace(router.asPath).then(() =>{}).catch(()=>{})
+    router.replace(router.asPath);
   };
 
   return (
@@ -66,8 +66,8 @@ const Home = ({ items }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="p-5 flex flex-col">
-        <h1 className="text-xl text-gray-700 font-bold font-sans">
+      <main>
+        <h1>
           Todo App with{" "}
           <a href="https://nextjs.org" target="_blank">
             Next.js{" "}
@@ -77,10 +77,22 @@ const Home = ({ items }: Props) => {
             MongoDB!
           </a>
         </h1>
-        <Form onInput={handleChangeKeyword} onReset={false} />
+        {isSearch ? (
+          <span>
+            <Search onChange={handleChangeKeyword} />
+            <button onClick={() => setIsSearch(!isSearch)}>reset</button>
+          </span>
+        ) : (
+          <span>
+            <Form />
+            <button onClick={() => setIsSearch(!isSearch)}>filter</button>
+          </span>
+        )}
+
         <List items={filtered} onChange={handleChange} />
       </main>
 
+      <footer></footer>
     </div>
   );
 };

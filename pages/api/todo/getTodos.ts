@@ -7,9 +7,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const db = client.db("todos");
     const todos = await db
       .collection("todos")
-      .find({}).sort({ isCompleted: 1, createdAt: -1 })
+      .find({})
       .limit(50)
-      .toArray()
+      .toArray();
     res.json(todos);
   } catch (err: any) {
     console.error(err);
