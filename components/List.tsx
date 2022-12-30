@@ -35,6 +35,7 @@ const List = ({ items, onChange }: Props) => {
   };
 
   const handleUpdate = async (e: ChangeEvent<HTMLInputElement>, item: Todo) => {
+    e.preventDefault();
     try {
       if (item._id) {
         await updateTask(item._id, {
@@ -43,9 +44,10 @@ const List = ({ items, onChange }: Props) => {
         });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
+
   return (
     <div className="flex relative items-center justify-center">
       {items?.length ? (
@@ -70,15 +72,17 @@ const List = ({ items, onChange }: Props) => {
                 ) : (
                   <div>
                     {isEdit ? (
-                      <input
-                        type="text"
-                        defaultValue={item.todo}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          handleUpdate(e, item)
-                        }
-                        onBlur={() => setIsEdit(false)}
-                        className="flex items-center justify-end px-2 py-2"
-                      />
+                      <form onSubmit={() => handleUpdate}>
+                        <input
+                          type="text"
+                          defaultValue={item.todo}
+                          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                            handleUpdate(e, item)
+                          }
+                          onBlur={() => setIsEdit(false)}
+                          className="flex border-none items-center justify-end px-2 py-2"
+                        />
+                      </form>
                     ) : (
                       <span
                         onDoubleClick={() => setIsEdit(true)}

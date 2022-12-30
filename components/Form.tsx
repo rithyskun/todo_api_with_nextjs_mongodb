@@ -135,7 +135,7 @@ const Form = ({ onInput, onEdit, onReset }: Props): JSX.Element => {
 
   useEffect(() => {
     if (typeof router.query.id === "string") {
-      socketConnection();
+      // socketConnection();
       onLoad(router.query.id);
     }
   }, [router.query]);
