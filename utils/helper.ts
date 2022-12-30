@@ -28,14 +28,14 @@ export async function updateTask(id: string, task: Todo) {
       "Content-Type": "application/json",
     },
   });
-  Router.push('/')
+  Router.push('/').then(()=>{}).catch(()=>{})
 };
 
 export async function handleDelete(id: string) {
   await fetch(ENDPOINT + '/todo/deleteTodo?id=' + id, {
     method: "DELETE",
   });
-  Router.push('/')
+  Router.push('/').then(()=>{}).catch(()=>{})
 };
 
 //Local date/time

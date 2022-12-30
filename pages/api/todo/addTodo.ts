@@ -9,6 +9,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let now = new Date()
     now.toISOString().substring(0, 10)
 
+    if(!req.body.todo) {
+      return res.status(400).send('The todo is required')
+    }
+
     const isExist = await db
       .collection("todos")
       .findOne({
