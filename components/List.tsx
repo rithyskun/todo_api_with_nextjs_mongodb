@@ -1,9 +1,7 @@
 import { Todo } from "../types/type";
-import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
-import { handleDelete, formatDateLocal, updateTask } from "../utils/helper";
+import { handleDelete, updateTask } from "../utils/helper";
 import Modal from "./Modal";
-import { time } from "console";
 
 type Props = {
   items: Todo[];
@@ -11,14 +9,9 @@ type Props = {
 };
 
 const List = ({ items, onChange }: Props) => {
-  const router = useRouter();
   const [active, setActive] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [confirmedDeleteId, setConfirmedDeleteId] = useState("");
-
-  const handleEdit = (id: string) => {
-    router.push(`/todo/edit/${id}`);
-  };
 
   const handleModalDeleteConfirm = (item: Todo) => {
     setConfirmedDeleteId(String(item._id));
@@ -30,19 +23,27 @@ const List = ({ items, onChange }: Props) => {
   };
 
   const handleConfirmedDelete = async () => {
-    if (confirmedDeleteId) {
-      await handleDelete(confirmedDeleteId);
+    try {
+      if (confirmedDeleteId) {
+        await handleDelete(confirmedDeleteId);
+      }
+    } catch (error) {
+      console.log(error);
     }
     setConfirmedDeleteId("");
     setActive(false);
   };
 
   const handleUpdate = async (e: ChangeEvent<HTMLInputElement>, item: Todo) => {
-    if (item._id) {
-      await updateTask(item._id, {
-        todo: e.target.value,
-        isCompleted: item.isCompleted,
-      });
+    try {
+      if (item._id) {
+        await updateTask(item._id, {
+          todo: e.target.value,
+          isCompleted: item.isCompleted,
+        });
+      }
+    } catch (error) {
+      console.log(error)
     }
   };
   return (
@@ -76,7 +77,7 @@ const List = ({ items, onChange }: Props) => {
                           handleUpdate(e, item)
                         }
                         onBlur={() => setIsEdit(false)}
-                        className="border-none flex items-center justify-end px-2 py-2"
+                        className="flex items-center justify-end px-2 py-2"
                       />
                     ) : (
                       <span

@@ -25,10 +25,10 @@ const Home = ({ items }: Props) => {
   const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
-    socketConnection();
-    socketOn("fetchTodo", (payload: Todo) => {
-      fetchTodo();
-    });
+    // socketConnection();
+    // socketOn("fetchTodo", (payload: Todo) => {
+    //   fetchTodo();
+    // });
   }, []);
   const handleChange = async (data: Todo, e: ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target;
@@ -59,9 +59,9 @@ const Home = ({ items }: Props) => {
     return item.todo?.toLowerCase().indexOf(keyword.toLowerCase()) > -1
   });
 
-  const fetchTodo = () => {
-    router.replace(router.asPath)
-  };
+  // const fetchTodo = () => {
+  //   router.replace(router.asPath)
+  // };
 
   return (
     <div>
