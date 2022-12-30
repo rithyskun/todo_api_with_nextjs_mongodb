@@ -1,7 +1,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { Todo } from "../types/type";
-import styles from "../styles/Home.module.css";
 import {
   socketConnection,
   socketDisconnected,
@@ -20,10 +19,11 @@ const inititalState = {
 
 type Props = {
   onInput(e: ChangeEvent<HTMLInputElement>): void;
-  onReset: boolean;
+  onEdit: boolean;
+  onReset(): void;
 };
 
-const Form = ({ onInput, onReset }: Props): JSX.Element => {
+const Form = ({ onInput, onEdit, onReset }: Props): JSX.Element => {
   const [task, setTask] = useState<Todo>(inititalState);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
@@ -42,10 +42,7 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
           return;
         }
         await updateTask(router.query.id, task);
-        router
-          .push("/")
-          .then(() => {})
-          .catch(() => {});
+        router.push("/").then(()=>{}).catch(()=>{})
       } else {
         if (!task.todo) {
           setError(true);
@@ -56,13 +53,11 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
           return;
         }
         await createTask(task);
-        onReset = true;
+        onEdit = true;
+        setTask(inititalState);
+        onReset();
       }
-      router
-        .push("/")
-        .then(() => {})
-        .catch(() => {});
-      setTask(inititalState);
+      router.push("/").then(()=>{}).catch(()=>{})
     } catch (error: any) {
       console.log(error);
     }
@@ -95,6 +90,7 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
       }, 2000);
       return;
     }
+
     return response;
   }
 
@@ -145,7 +141,7 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
   }, [router.query]);
 
   return (
-    <div>
+    <div className="flex items-center justify-center">
       <form onSubmit={handleSubmit}>
         {router.query.id ? (
           <div className="p-5 flex items-center space-x-2">
@@ -155,8 +151,9 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
               id="todo"
               value={task.todo}
               onChange={handleChange}
+              onReset={onReset}
               placeholder="Update a task item"
-              className="bg-gray-50 form-input border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-56 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 form-input border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-72 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
             <input
               type="checkbox"
@@ -177,8 +174,9 @@ const Form = ({ onInput, onReset }: Props): JSX.Element => {
               value={task.todo}
               onChange={handleChange}
               onInput={onInput}
+              onReset={onReset}
               placeholder="add/search task item"
-              className="bg-gray-50 form-input border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="bg-gray-50 form-input border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-72 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
             {error ? (
               <p className="mt-2 flex text-sm text-red-600 dark:text-red-500">

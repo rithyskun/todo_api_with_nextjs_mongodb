@@ -1,8 +1,9 @@
 import { Todo } from "../types/type";
 import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
-import { handleDelete } from "../utils/helper";
+import { handleDelete, formatDateLocal, updateTask } from "../utils/helper";
 import Modal from "./Modal";
+import { time } from "console";
 
 type Props = {
   items: Todo[];
@@ -12,21 +13,44 @@ type Props = {
 const List = ({ items, onChange }: Props) => {
   const router = useRouter();
   const [active, setActive] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [confirmedDeleteId, setConfirmedDeleteId] = useState("");
 
   const handleEdit = (id: string) => {
     router.push(`/todo/edit/${id}`);
   };
 
-  const handleModalDeleteConfirm = () => {
-    setActive(true)
-  }
+  const handleModalDeleteConfirm = (item: Todo) => {
+    setConfirmedDeleteId(String(item._id));
+    setActive(true);
+  };
 
+  const handleCancel = () => {
+    setActive(false);
+  };
+
+  const handleConfirmedDelete = async () => {
+    if (confirmedDeleteId) {
+      await handleDelete(confirmedDeleteId);
+    }
+    setConfirmedDeleteId("");
+    setActive(false);
+  };
+
+  const handleUpdate = async (e: ChangeEvent<HTMLInputElement>, item: Todo) => {
+    if (item._id) {
+      await updateTask(item._id, {
+        todo: e.target.value,
+        isCompleted: item.isCompleted,
+      });
+    }
+  };
   return (
-    <div className="flex">
+    <div className="flex relative items-center justify-center">
       {items?.length ? (
-        <ul>
+        <ul className="w-72">
           {items?.map((item) => (
-            <li key={item._id} className="flex items-center mb-2">
+            <li key={item._id} className="flex items-center justify-start">
               <input
                 id="isCompleted"
                 name="isCompleted"
@@ -35,33 +59,50 @@ const List = ({ items, onChange }: Props) => {
                   onChange(item, e)
                 }
                 defaultChecked={item.isCompleted}
-                className="form-input rounded-full px-3 py-3 hover:border-green-500"
+                className="form-input rounded-full px-2 py-2 hover:border-green-500"
               />
-
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center justify-start text-center">
                 {item.isCompleted ? (
-                  <span className="flex line-through opacity-40">
-                    {item.todo} - {item.createdAt}
+                  <span className="flex line-through opacity-40 items-center justify-start px-2 py-2">
+                    {item.todo}
                   </span>
                 ) : (
-                  <span>
-                    {item.todo} - {item.createdAt}
-                  </span>
+                  <div>
+                    {isEdit ? (
+                      <input
+                        type="text"
+                        defaultValue={item.todo}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          handleUpdate(e, item)
+                        }
+                        onBlur={() => setIsEdit(false)}
+                        className="border-none flex items-center justify-end px-2 py-2"
+                      />
+                    ) : (
+                      <span
+                        onDoubleClick={() => setIsEdit(true)}
+                        className="border-none flex items-center justify-end px-2 py-2"
+                      >
+                        {item.todo}
+                      </span>
+                    )}
+                  </div>
                 )}
-                <button
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-3 py-1.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  onClick={() => handleEdit(String(item._id))}
-                >
-                  edit
-                </button>
-                <button
-                  className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm sm:w-auto px-3 py-1.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                  // onClick={() => handleDelete(String(item._id))}
-                  onClick={handleModalDeleteConfirm}
-                >
-                  x
-                </button>
-                <Modal show={active}/>
+
+                <div className="border-none flex px-2 py-2">
+                  <button
+                    className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-full text-sm sm:w-auto py-1 px-2 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                    onClick={() => handleModalDeleteConfirm(item)}
+                  >
+                    x
+                  </button>
+                </div>
+                <Modal
+                  show={active}
+                  item={item}
+                  handleConfirmedDelete={handleConfirmedDelete}
+                  handleCancel={handleCancel}
+                />
               </div>
             </li>
           ))}
@@ -70,7 +111,6 @@ const List = ({ items, onChange }: Props) => {
         <>no result. create new one instead!</>
       )}
     </div>
-    
   );
 };
 

@@ -50,13 +50,17 @@ const Home = ({ items }: Props) => {
     setKeyword(e.target.value)
   }
 
-  let filtered = items.filter((item) => {
-    if(!item) return items
-    return item.todo?.toLowerCase().includes(keyword);
+  const onReset = () => {
+    setKeyword("")
+  }
+
+  const filtered = items.filter((item) => {
+    if(!keyword.length) return item
+    return item.todo?.toLowerCase().indexOf(keyword.toLowerCase()) > -1
   });
 
   const fetchTodo = () => {
-    router.replace(router.asPath).then(() =>{}).catch(()=>{})
+    router.replace(router.asPath)
   };
 
   return (
@@ -66,18 +70,18 @@ const Home = ({ items }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="p-5 flex flex-col">
-        <h1 className="text-xl text-gray-700 font-bold font-sans">
+      <main className="p-5 w-full">
+        <h1 className="text-xl text-gray-700 font-bold font-sans p-5 items-center justify-center flex">
           Todo App with{" "}
-          <a href="https://nextjs.org" target="_blank">
+          <a href="https://nextjs.org" target="_blank" className="text-blue-500 text-2xl">
             Next.js{" "}
           </a>{" "}
           &{" "}
-          <a href="https://www.mongodb.com/home" target="_blank">
+          <a href="https://www.mongodb.com/home" target="_blank" className="text-green-500 text-2xl">
             MongoDB!
           </a>
         </h1>
-        <Form onInput={handleChangeKeyword} onReset={false} />
+        <Form onInput={handleChangeKeyword} onReset={onReset} onEdit={false}/>
         <List items={filtered} onChange={handleChange} />
       </main>
 
